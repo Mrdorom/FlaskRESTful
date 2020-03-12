@@ -8,7 +8,7 @@
 
 
 
-前端项目是：Vue.js开发的，通过Vue-cli脚手架进行创建项目，前端模板使用了BootstrapVue框架。后面也补上
+前端项目是：Vue.js开发的，通过Vue-cli脚手架进行创建项目，前端模板使用了BootstrapVue框架。地址在[这里](https://github.com/WRAllen/MyVue)
 
 
 
