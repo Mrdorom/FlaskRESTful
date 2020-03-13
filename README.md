@@ -43,26 +43,6 @@ pip install -r requirement.txt
 
 这样两个基础表就建立好了，一个是user一个是article
 
-## 注册用户
-
-暂时用户通过ip+/user的POST请求添加用户
-
-```json
-{
-	"UserName": "allen",
-	"Password": "123"
-}
-```
-
-返回结果
-
-```json
-{
-    "code": 200,
-    "message": "注册成功！"
-}
-```
-
 
 
 ## 运行项目
@@ -90,6 +70,26 @@ pip install -r requirement.txt
 ## 后面就可以用Postman进行测试了
 
 话说Postman是真的好用O(∩_∩)O
+
+## 注册用户
+
+用户通过ip+/user的POST请求添加用户
+
+```json
+{
+	"UserName": "allen",
+	"Password": "123"
+}
+```
+
+返回结果
+
+```json
+{
+    "code": 200,
+    "message": "注册成功！"
+}
+```
 
 # 项目结构
 
