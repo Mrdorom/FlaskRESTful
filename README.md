@@ -45,19 +45,25 @@ pip install -r requirement.txt
 
 ## 注册用户
 
-暂时用户通过shell进行注册（后面再添加用户的接口）
+暂时用户通过ip+/user的POST请求添加用户
 
-```shell
-项目根文件夹下：python manager.py shell
->>> from app.user.models import User
->>> new_user = User()
->>> new_user.Name = "admin"
->>> new_user.password = "123456"
->>> db.session.add(new_user)
->>> db.session.commit()
+```json
+{
+	"UserName": "allen",
+	"Password": "123"
+}
 ```
 
-这样就通过shell创建了用户了
+返回结果
+
+```json
+{
+    "code": 200,
+    "message": "注册成功！"
+}
+```
+
+
 
 ## 运行项目
 
