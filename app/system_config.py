@@ -5,6 +5,7 @@ class SysConfig():
         "USER_PASSWORD_ERROR": {"code": 204, "message": "用户密码错误！"},
         "USER_NAME_EMPTY": {"code": 204, "message": "用户名不可为空！"},
         "USER_PASSWORD_EMPTY": {"code": 204, "message": "用户密码不可为空！"},
+        "ARTICLE_NOT_EXIST": {"code": 204, "message": "该文章不存在！"},
         "SIGN_UP_SUCCESS": {"code": 200, "message": "注册成功！"},
         "TOKEN_ERROR": {"code": 2000, "message": "TOKEN不正确！"},
         "TOKEN_EXPIRED": {"code": 2001, "message": "TOKEN过期！"},

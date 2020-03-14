@@ -44,6 +44,24 @@ class ArticleResource(Resource):
         except Exception as e:
             return {"code": 204, "message": "添加失败!"+e}
 
+    def put(self, *args, **kwargs):
+        print("进入Article的put")
+        try:
+            parser.add_argument("ArticleID")
+            parser.add_argument("Title")
+            parser.add_argument("Text")
+            args = parser.parse_args()
+            check_article = Article.query.get(args["ArticleID"])
+            if not check_article:
+                return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
+            check_article.Title = args["Title"]
+            check_article.Text = args["Text"]
+            db.session.add(check_article)
+            db.session.commit()
+            return {"code": 200, "message": "修改成功!"}
+        except Exception as e:
+            return {"code": 204, "message": "添加失败!"+e}
+
 
 class ArticleSingleResource(Resource):
     method_decorators = {'get': [token_required]}
