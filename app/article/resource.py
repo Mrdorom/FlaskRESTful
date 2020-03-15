@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from app import db
 from app.user.models import User
 from app.auth import token_required
+from app.system_config import SysConfig
 from .models import Article
 from .schema import ArticleSchema
 
@@ -14,7 +15,10 @@ class ArticleResource(Resource):
     # 全部请求都验证:get,post,put,delete
     # method_decorators = [authenticate]
     # 只验证字典里面列出的请求类型,下面就是只对get和post进行token认证
-    method_decorators = {'get': [token_required], "post": [token_required]}
+    method_decorators = {
+        'get': [token_required], "post": [token_required],
+        "put": [token_required], "delete": [token_required]
+    }
 
     def get(self, *args, **kwargs):
         parser.add_argument("Page")
@@ -45,22 +49,35 @@ class ArticleResource(Resource):
             return {"code": 204, "message": "添加失败!"+e}
 
     def put(self, *args, **kwargs):
-        print("进入Article的put")
+        parser.add_argument("ArticleID")
+        parser.add_argument("Title")
+        parser.add_argument("Text")
+        args = parser.parse_args()
+        check_article = Article.query.get(args["ArticleID"])
+        if not check_article:
+            return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
+        check_article.Title = args["Title"]
+        check_article.Text = args["Text"]
         try:
-            parser.add_argument("ArticleID")
-            parser.add_argument("Title")
-            parser.add_argument("Text")
-            args = parser.parse_args()
-            check_article = Article.query.get(args["ArticleID"])
-            if not check_article:
-                return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
-            check_article.Title = args["Title"]
-            check_article.Text = args["Text"]
-            db.session.add(check_article)
             db.session.commit()
-            return {"code": 200, "message": "修改成功!"}
+            return SysConfig.ReturnCode("CHANGE_SUCCESS")
         except Exception as e:
-            return {"code": 204, "message": "添加失败!"+e}
+            db.session.rollback()
+            return {"code": 204, "message": f"添加失败!{str(e)}"}
+
+    def delete(self, *args, **kwargs):
+        parser.add_argument("ArticleID")
+        args = parser.parse_args()
+        check_article = Article.query.get(args["ArticleID"])
+        if not check_article:
+            return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
+        db.session.delete(check_article)
+        try:
+            db.session.commit()
+            return SysConfig.ReturnCode("DELETE_SUCCESS")
+        except Exception as e:
+            db.session.rollback()
+            return {"code": 204, "message": f"删除失败!{str(e)}"}
 
 
 class ArticleSingleResource(Resource):
@@ -73,6 +90,6 @@ class ArticleSingleResource(Resource):
         print(f"ArticleID:{args['ArticleID']}, type:{type(args['ArticleID'])}")
         article = Article.query.get(args['ArticleID'])
         if not article:
-            return {"code": 204, "message": "该文章已被删除！"}
+            return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
         article_schema = ArticleSchema()
         return article_schema.dump(article)
