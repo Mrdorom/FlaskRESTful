@@ -5,17 +5,23 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 # 引入marshmallow的包
 from flask_marshmallow import Marshmallow
+# 导入flask-redis
+from flask_redis import FlaskRedis
 
 
 # 实例化数据库对象
 db = SQLAlchemy()
 # 实例化marshmallow
 ma = Marshmallow()
+# 实例化flask-redis
+redis_client = FlaskRedis()
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:AliCentOSMysql123456@localhost:3306/FlaskRESTFul'
+    # 添加flask-reids的配置
+    REDIS_URL = "redis://localhost:6379/0"
     # 关闭数据追踪，避免内存资源浪费
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # 解决跨域问题
@@ -29,6 +35,9 @@ def create_app():
     api = Api(app)
     # 将app中的配置文件应用到marshmallow中
     ma.init_app(app)
+    # 将app中的配置文件应用到flask-redis中--暂时不使用
+    # 等后面celery接入进来后用于读取celery异步获取的信息
+    redis_client.init_app(app)
 
     from app.user import user as user_bp
     app.register_blueprint(user_bp)
