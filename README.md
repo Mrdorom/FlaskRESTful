@@ -2,7 +2,7 @@
 
 刚刚开始学习前后端分离的开发模式，鉴于之前没有经验，特地用这个项目来锻炼一下自己，里面的代码可能不规范，希望大神们看到后及时提出这样我好改正，这个项目的目的就是为了学习，并且希望也能帮助到其他正在使用Flask构建RESTful规范后端的同学。
 
-这个项目使用了`Flask+Sqlalchemy+flask_restful+flask_marshmallow+Celery+Mysql`来构建项目，后面可能会加上`Celery`，但是现在暂时不使用。
+这个项目使用了`Flask+Sqlalchemy+flask_restful+flask_marshmallow+Celery+Mysql`来构建项目，后面可能会加上`scrapy`，但是现在暂时不使用。
 
 认证机制使用Token，用户登录后获得一个临时的Token，每次请求通过这个Token进行认证。至于怎么保存啥的是前端要管的，后面我也把vue的前端学习项目也传到github
 
