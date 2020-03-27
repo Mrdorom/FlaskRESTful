@@ -152,3 +152,5 @@ pip install -r requirement.txt
 ## celery_task文件
 
 里面的`__init__.py`写了主要的Celery的配置和任务，不过暂时Celery没有实质性的使用，只是通过了测试可以和sqlalchemy一起使用了，后期要使用这个Celery还要结合supervisor
+
+现在这个文件夹里面有个爬取百度新闻热点额爬虫，但是还没有和数据库关联

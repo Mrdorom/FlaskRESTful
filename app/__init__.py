@@ -49,6 +49,12 @@ def create_app():
     from app.article import article as articler_bp
     app.register_blueprint(articler_bp)
 
+    from app.new import new as new_bp
+    app.register_blueprint(new_bp)
+
+    from app.new.resource import NewResource
+    api.add_resource(NewResource, '/new')
+
     from app.article.resource import ArticleResource, ArticleSingleResource
     api.add_resource(ArticleResource, '/article')
     api.add_resource(ArticleSingleResource, '/article/single')
