@@ -1,18 +1,17 @@
 # 这是一个符合RESTful规范的Flask项目
 
-刚刚开始学习前后端分离的开发模式，鉴于之前没有经验，特地用这个项目来锻炼一下自己，里面的代码可能不规范，希望大神们看到后及时提出这样我好改正，这个项目的目的就是为了学习，并且希望也能帮助到其他正在使用Flask构建RESTful规范后端的同学。
-
-这个项目使用了`Flask+Sqlalchemy+flask_restful+flask_marshmallow+Celery+Mysql`来构建项目，后面可能会加上`scrapy`，但是现在暂时不使用。
+这个项目使用了`Flask+Sqlalchemy+flask_restful+flask_marshmallow+Celery+Mysql`来构建基础项目，
+爬虫使用`scrapy`现在只是简单的访问某度的热点新闻然后没做处理
 
 认证机制使用Token，用户登录后获得一个临时的Token，每次请求通过这个Token进行认证。至于怎么保存啥的是前端要管的，后面我也把vue的前端学习项目也传到github
 
-
-
+搭配前端项目可以完整的运行起来（虽然前端界面丑）
 前端项目是：Vue.js开发的，通过Vue-cli脚手架进行创建项目，前端模板使用了BootstrapVue框架。地址在[这里](https://github.com/WRAllen/MyVue)
 
 
-
-PS：要稍微了解Flask的同学会容易看懂，对Flask不熟悉的同学建议先看一下Flask的官网教程，当前Celery只是通过了测试可以和sqlalchemy一起结合使用，后期打算加上scrapy框架通过Celery来执行(后期要使用这个Celery还要结合supervisor)
+PS：要稍微了解Flask的同学会容易看懂，对Flask不熟悉的同学建议先看一下Flask的官网教程，当前Celery只是通过了测试可以和sqlalchemy一起结合使用。
+现在在学习docker, 已经成功的将项目打包成images了，不过还在测试中（因为我还在学docker）
+后面搞清楚了再写，这里先不误人子弟了。
 
 # 需要环境
 
@@ -24,14 +23,13 @@ pip install -r requirement.txt
 
 当然你的电脑或者服务器必须有Mysql，对于Mysql的安装这里不介绍。
 
-由于Celery的使用要依赖Redis，这里也默认安装了Redis(没有使用RabbitMQ,broker和backend都使用了Redis)
+由于Celery的使用要依赖Redis，这里也默认安装了Redis(没有使用RabbitMQ,broker和backend都使用了Redis,后期可能修改成使用推荐的RabbitMQ)
 
 # 修改配置
 
 **记得把项目里面的Mysql配置啥的改成自己的，配置在`app/__init__.py`里面**
 
-并且根据你的配置去把数据库建立起来，这里也不介绍了
-
+并且根据你的配置去把数据库建立起来（其实就是在mysql里面创建一个你想要的数据库）
 # 如何使用
 
 ## 创建表
@@ -43,7 +41,7 @@ pip install -r requirement.txt
 >>> db.create_all()
 ```
 
-这样两个基础表就建立好了，一个是user一个是article
+这样基础表就建立好了
 
 
 
@@ -104,16 +102,35 @@ pip install -r requirement.txt
 │   │   └── schema.py
 │   ├── auth.py
 │   ├── __init__.py
+│   ├── new
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── resource.py
+│   │   └── schema.py
 │   ├── system_config.py
 │   └── user
 │       ├── __init__.py
 │       ├── models.py
 │       ├── resource.py
 │       └── schema.py
-├── celery_task ------这个是celery的独立文件夹-后期要加上scrapy
-│   └── __init__.py---当前celery的配置也写在这里
+├── celery_task
+│   ├── BaiduNews
+│   │   ├── BaiduNews
+│   │   │   ├── __init__.py
+│   │   │   ├── items.py
+│   │   │   ├── middlewares.py
+│   │   │   ├── pipelines.py
+│   │   │   ├── settings.py
+│   │   │   └── spiders
+│   │   │       ├── BaiDuSpider.py
+│   │   │       └── __init__.py
+│   │   └── scrapy.cfg
+│   └── __init__.py
+├── dockerfile
 ├── manager.py
+├── README.md
 └── requirement.txt
+
 
 ```
 
@@ -131,21 +148,21 @@ pip install -r requirement.txt
 
 整个app就是我们最重要的内容了
 
-> auth.py:这个是用于验证Token的
+> `auth.py`:这个是用于验证Token的
 >
 > `__init__.py`:这个里面是项目的主要配置
 >
-> system_config.py:这个里面是通用的一些提示啥的
+> `system_config.py`:这个里面是通用的一些提示啥的
 >
 > user用户模块文件夹
 >
 > >`__init__.py`:用户的蓝图声明
 > >
-> >models.py:用户模型
+> >`models.py`:用户模型
 > >
-> >resource.py:RESTful规范接口写在这里面
+> >`resource.py`:RESTful规范接口写在这里面
 > >
-> >schema.py: 把模型映射成Json格式的文件 
+> >`schema.py`: 把模型映射成Json格式的文件 
 >
 > article文章模块文件夹：与user用户模块相同不进行介绍
 

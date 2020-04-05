@@ -51,13 +51,13 @@ def create_app():
 
     from app.new import new as new_bp
     app.register_blueprint(new_bp)
-
+    # === 上面是注册蓝图 ===
     from app.new.resource import NewResource
     api.add_resource(NewResource, '/new')
 
-    from app.article.resource import ArticleResource, ArticleSingleResource
+    from app.article.resource import ArticleResource, ArticleListResource
     api.add_resource(ArticleResource, '/article')
-    api.add_resource(ArticleSingleResource, '/article/single')
+    api.add_resource(ArticleListResource, '/article_list')
 
     from app.user.resource import UserResource
     api.add_resource(UserResource, '/user')

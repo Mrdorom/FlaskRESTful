@@ -12,25 +12,22 @@ parser = reqparse.RequestParser()
 
 
 class ArticleResource(Resource):
-    # 全部请求都验证:get,post,put,delete
-    # method_decorators = [authenticate]
-    # 只验证字典里面列出的请求类型,下面就是只对get和post进行token认证
     method_decorators = {
-        'get': [token_required], "post": [token_required],
-        "put": [token_required], "delete": [token_required]
+        'post': [token_required],
+        'put': [token_required],
+        'delete': [token_required]
     }
 
     def get(self, *args, **kwargs):
-        parser.add_argument("Page")
+        print("ArticleResource-get")
+        parser.add_argument("ArticleID")
         args = parser.parse_args()
-        page = int(args["Page"]) if args["Page"] else 1
-        print("page", page, type(page))
-        pagination = db.session.query(
-            Article.ID, Article.Title, Article.Text
-        ).paginate(page, per_page=8, error_out=False)
-        articles = pagination.items
-        article_schema = ArticleSchema(many=True)
-        return article_schema.dump(articles)
+        print(f"ArticleID:{args['ArticleID']}, type:{type(args['ArticleID'])}")
+        article = Article.query.get(args['ArticleID'])
+        if not article:
+            return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
+        article_schema = ArticleSchema()
+        return article_schema.dump(article)
 
     def post(self, *args, **kwargs):
         try:
@@ -80,16 +77,17 @@ class ArticleResource(Resource):
             return {"code": 204, "message": f"删除失败!{str(e)}"}
 
 
-class ArticleSingleResource(Resource):
-    method_decorators = {'get': [token_required]}
+class ArticleListResource(Resource):
 
     def get(self, *args, **kwargs):
-        print("-------进入---------------")
-        parser.add_argument("ArticleID")
+        print("进入list")
+        parser.add_argument("Page")
         args = parser.parse_args()
-        print(f"ArticleID:{args['ArticleID']}, type:{type(args['ArticleID'])}")
-        article = Article.query.get(args['ArticleID'])
-        if not article:
-            return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
-        article_schema = ArticleSchema()
-        return article_schema.dump(article)
+        page = int(args["Page"]) if args["Page"] else 1
+        print("page", page, type(page))
+        pagination = db.session.query(
+            Article.ID, Article.Title
+        ).paginate(page, per_page=8, error_out=False)
+        articles = pagination.items
+        article_schema = ArticleSchema(many=True)
+        return article_schema.dump(articles)
