@@ -19,12 +19,12 @@ redis_client = FlaskRedis()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:AliCentOSMysql123456@localhost:3306/FlaskRESTFul'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:AliCentOSMysql123456@flask-mysql:3306/FlaskRESTFul'
     # 添加flask-reids的配置
-    app.config['REDIS_URL'] = "redis://localhost:6379/0"
+    app.config['REDIS_URL'] = "redis://flask-mysql:6379/0"
     # 添加Celery的配置，与上面这个的库最好分开（/0）-这里不使用
-    app.config['CELERY_BROKER_URL'] = "redis://localhost:6379/1"
-    app.config['CELERY_BACKEND_URL'] = "redis://localhost:6379/1"
+    app.config['CELERY_BROKER_URL'] = "redis://flask-mysql:6379/1"
+    app.config['CELERY_BACKEND_URL'] = "redis://flask-mysql:6379/1"
 
     # 关闭数据追踪，避免内存资源浪费
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
