@@ -68,4 +68,7 @@ def create_app():
     from app.user.resource import CheckToken
     api.add_resource(CheckToken, '/token')
 
+    from app.gbcomment.resource import GBComment
+    api.add_resource(GBComment, '/gb_comment')
+
     return app
