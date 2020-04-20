@@ -15,13 +15,17 @@ db = SQLAlchemy()
 ma = Marshmallow()
 # 实例化flask-redis
 redis_client = FlaskRedis()
+# docker: flask-mysql
+mysql_connet_string = "flask-mysql"
+# 下面是使用本地，也就是venv这种类型的连接地址
+# mysql_connet_string = "localhost"
 
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:AliCentOSMysql123456@flask-mysql:3306/FlaskRESTFul'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://root:AliCentOSMysql123456@{mysql_connet_string}:3306/FlaskRESTFul"
     # 添加flask-reids的配置
-    app.config['REDIS_URL'] = "redis://flask-mysql:6379/0"
+    app.config['REDIS_URL'] = f"redis://{mysql_connet_string}:6379/0"
     # 关闭数据追踪，避免内存资源浪费
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # 解决跨域问题
@@ -68,3 +72,17 @@ def create_app():
     api.add_resource(GBComment, '/gb_comment')
 
     return app
+
+
+# 创建项目的时候初始化表内数据的函数
+def init_func():
+    from app.user.models import Role, User
+    role = Role(RoleName="管理员")
+    db.session.add(role)
+    db.session.commit()
+    user = User(UserName="admin", password="123456", RoleID=role.ID)
+    db.session.add(user)
+    db.session.commit()
+    role = Role(RoleName="用户")
+    db.session.add(role)
+    db.session.commit()

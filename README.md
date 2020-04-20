@@ -87,8 +87,8 @@ PS：要稍微了解Flask的同学会容易看懂，对Flask不熟悉的同学�
 ## 在项目根目录打包成image
 打包时间有点久，可以先开始创建桥接网络(包含)后面的教程
 ```shell
-# docker build -t image的名字/tag 具体需要被打包成iamge的位置
-# 下面就是把当前文件夹FlaskRestful下的内容打包成flask_restful/1.0
+docker build -t image的名字/tag 具体需要被打包成iamge的位置
+下面就是把当前文件夹FlaskRestful下的内容打包成flask_restful/1.0
 [root@XXX FlaskRestful]# docker build -t flask_restful/1.0 ./
 巴拉巴拉一堆东西，最后看到下面
 Successfully built 847928942db6
@@ -178,20 +178,16 @@ root@0f7e82571cd9:/# mysql -u root -pAliCentOSMysql123456
 mysql> create schema `FlaskRESTFul` default character set utf8 ;
 Query OK, 1 row affected, 1 warning (0.02 sec)
 ```
-## 然后再次用临时的flask容器创建表
+## 然后再次用临时的flask容器创建表-和初始化函数
+初始化函数init_func里面包含创建admin用户密码123456
 ```shell
 docker run --name flask_app -it --rm --network flask_network -p 8888:8888 flask_restful/1.0 python manager.py shell
 [root@iZbp117p51ll3pasv31s6fZ FlaskRestful]# docker run --name flask_app -it --rm --network flask_network -p 5000:8888 flask_restful/1.0 python manager.py shell
-/usr/local/lib/python3.6/site-packages/flask_marshmallow/__init__.py:27: UserWarning: Flask-SQLAlchemy integration requires marshmallow-sqlalchemy to be installed.
-  "Flask-SQLAlchemy integration requires "
->>> db
-<SQLAlchemy engine=mysql+pymysql://root:***@flask-mysql:3306/FlaskRESTFul?charset=utf8>
 >>> db.create_all()
-/usr/local/lib/python3.6/site-packages/pymysql/cursors.py:170: Warning: (3719, "'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.")
-  result = self._query(query)
->>> 
+>>> init_func()
+>>>
 ```
-这样表也创建好了
+这样表也创建好了-并且用户也有了
 ## 创建永久的flask容器
 下面是正常的语句
 ```shell

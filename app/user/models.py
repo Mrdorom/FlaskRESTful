@@ -6,11 +6,11 @@ from app.system_config import SysConfig
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'user'
     ID = db.Column(db.Integer, primary_key=True)
-    UserName = db.Column(db.String(64), unique=True, index=True)
-    NickName = db.Column(db.String(64))
-    password_hash = db.Column(db.String(128))
+    UserName = db.Column(db.String(64), unique=True, index=True, comment="用户名")
+    NickName = db.Column(db.String(64), comment="用户昵称")
+    PasswordHash = db.Column(db.String(128), comment="密码HASH值")
+    RoleID = db.Column(db.Integer, db.ForeignKey('role.ID'), comment="外键-角色ID")
 
     @property
     def password(self):
@@ -18,10 +18,10 @@ class User(UserMixin, db.Model):
 
     @password.setter
     def password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.PasswordHash = generate_password_hash(password)
 
     def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.PasswordHash, password)
 
     # 通过用户信息来生成token，expiration是过期的时间，单位是秒
     # 这些认证信息是保存在内存的，项目重启就失效
@@ -43,3 +43,8 @@ class User(UserMixin, db.Model):
             return SysConfig.ReturnCode("TOKEN_ERROR")
         user = User.query.get(data['ID'])
         return user
+
+
+class Role(db.Model):
+    ID = db.Column(db.Integer, primary_key=True)
+    RoleName = db.Column(db.String(64), unique=True, comment="角色名")

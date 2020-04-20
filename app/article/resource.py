@@ -1,8 +1,9 @@
 from flask_restful import Resource, reqparse
+from datetime import datetime
 
 from app import db
 from app.user.models import User
-from app.auth import token_required
+from app.auth import token_required, admin_required
 from app.system_config import SysConfig
 from .models import Article
 from .schema import ArticleSchema
@@ -13,16 +14,14 @@ parser = reqparse.RequestParser()
 
 class ArticleResource(Resource):
     method_decorators = {
-        'post': [token_required],
-        'put': [token_required],
-        'delete': [token_required]
+        'post': [admin_required, token_required],
+        'put': [admin_required, token_required],
+        'delete': [admin_required, token_required]
     }
 
     def get(self, *args, **kwargs):
-        print("ArticleResource-get")
         parser.add_argument("ArticleID")
         args = parser.parse_args()
-        print(f"ArticleID:{args['ArticleID']}, type:{type(args['ArticleID'])}")
         article = Article.query.get(args['ArticleID'])
         if not article:
             return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
@@ -39,6 +38,9 @@ class ArticleResource(Resource):
             new_artile.Title = args["Title"]
             new_artile.Text = args["Text"]
             new_artile.UserID = args["UserID"]
+            new_artile.CreateDay = datetime.now()
+            new_artile.CreateTime = datetime.now()
+            new_artile.UpdateTime = datetime.now()
             db.session.add(new_artile)
             db.session.commit()
             return {"code": 200, "message": "添加成功!"}
@@ -55,6 +57,7 @@ class ArticleResource(Resource):
             return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
         check_article.Title = args["Title"]
         check_article.Text = args["Text"]
+        check_article.UpdateTime = datetime.now()
         try:
             db.session.commit()
             return SysConfig.ReturnCode("CHANGE_SUCCESS")

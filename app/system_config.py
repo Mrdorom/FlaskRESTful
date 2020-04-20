@@ -4,6 +4,7 @@ class SysConfig():
         "CHANGE_SUCCESS": {"code": 200, "message": "修改成功！"},
         "DELETE_SUCCESS": {"code": 200, "message": "删除成功！"},
         "USER_NOT_EXIST": {"code": 204, "message": "该用户不存在！"},
+        "USER_NOT_PERMISSION": {"code": 204, "message": "该用户不包含该权限!"},
         "USER_EXIST": {"code": 204, "message": "该用户已存在！"},
         "USER_PASSWORD_ERROR": {"code": 204, "message": "用户密码错误！"},
         "USER_NAME_EMPTY": {"code": 204, "message": "用户名不可为空！"},
@@ -11,7 +12,8 @@ class SysConfig():
         "ARTICLE_NOT_EXIST": {"code": 204, "message": "该文章不存在！"},
         "TOKEN_ERROR": {"code": 2000, "message": "TOKEN不正确！"},
         "TOKEN_EXPIRED": {"code": 2001, "message": "TOKEN过期！"},
-        "TOKEN_NEED": {"code": 2002, "message": "请携带Token进行访问！"}
+        "TOKEN_NEED": {"code": 2002, "message": "请携带Token进行访问！"},
+        "USERID_NEED": {"code": 204, "message": "请携带UserID进行访问！"},
     }
     SECRETKEY = "awdJKawd12121"
 
