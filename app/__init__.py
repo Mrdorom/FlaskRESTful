@@ -16,16 +16,16 @@ ma = Marshmallow()
 # 实例化flask-redis
 redis_client = FlaskRedis()
 # docker: flask-mysql
-mysql_connet_string = "flask-mysql"
+# mysql_connet_string = "flask-mysql"
 # 下面是使用本地，也就是venv这种类型的连接地址
-# mysql_connet_string = "localhost"
+mysql_connet_string = "localhost"
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://root:AliCentOSMysql123456@{mysql_connet_string}:3306/FlaskRESTFul"
     # 添加flask-reids的配置
-    app.config['REDIS_URL'] = f"redis://{mysql_connet_string}:6379/0"
+    app.config['REDIS_URL'] = "redis://localhost:6379/0"
     # 关闭数据追踪，避免内存资源浪费
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # 解决跨域问题
@@ -39,8 +39,7 @@ def create_app():
     api = Api(app)
     # 将app中的配置文件应用到marshmallow中
     ma.init_app(app)
-    # 将app中的配置文件应用到flask-redis中--暂时不使用
-    # 等后面celery接入进来后用于读取celery异步获取的信息
+    # 将app中的配置文件应用到flask-redis中
     redis_client.init_app(app)
 
     from app.user import user as user_bp
