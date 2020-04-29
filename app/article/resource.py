@@ -22,7 +22,14 @@ class ArticleResource(Resource):
     def get(self, *args, **kwargs):
         parser.add_argument("ArticleID")
         args = parser.parse_args()
-        article = Article.query.get(args['ArticleID'])
+        # 下面注释了无需链表的查询
+        # article = Article.query.get(args['ArticleID'])
+        article = db.session.query(
+            Article.Title, Article.Text, Article.UserID,
+            Article.CreateTime, Article.UpdateTime, User.UserName
+        ).outerjoin(
+            User, Article.UserID == User.ID
+        ).filter(Article.ID == args['ArticleID']).first()
         if not article:
             return SysConfig.ReturnCode("ARTICLE_NOT_EXIST")
         article_schema = ArticleSchema()

@@ -25,7 +25,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://root:AliCentOSMysql123456@{mysql_connet_string}:3306/FlaskRESTFul"
     # 添加flask-reids的配置
-    app.config['REDIS_URL'] = "redis://localhost:6379/0"
+    # app.config['REDIS_URL'] = "redis://localhost:6379/0"
     # 关闭数据追踪，避免内存资源浪费
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # 解决跨域问题
